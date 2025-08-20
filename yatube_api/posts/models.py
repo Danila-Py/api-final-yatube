@@ -6,87 +6,87 @@ User = get_user_model()
 
 class Group(models.Model):
     title = models.CharField(
-        max_length=200, verbose_name="Название группы"
+        max_length=200, verbose_name='Название группы'
     )
     slug = models.SlugField(
-        unique=True, verbose_name="Слаг-адрес"
+        unique=True, verbose_name='Слаг-адрес'
     )
-    description = models.TextField(verbose_name="Описание")
+    description = models.TextField(verbose_name='Описание')
 
     class Meta:
-        verbose_name = "Группа"
-        verbose_name_plural = "Группы"
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
 
     def __str__(self):
-        return f"Группа: {self.title}"
+        return f'Группа: {self.title}'
 
 
 class Post(models.Model):
-    text = models.TextField(verbose_name="Текст поста")
-    pub_date = models.DateTimeField("Дата публикации", auto_now_add=True)
+    text = models.TextField(verbose_name='Текст поста')
+    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="posts",
-        verbose_name="Автор поста"
+        User, on_delete=models.CASCADE, related_name='posts',
+        verbose_name='Автор поста'
     )
     image = models.ImageField(
-        upload_to="posts/", null=True, blank=True,
-        verbose_name="Изображение")
+        upload_to='posts/', null=True, blank=True,
+        verbose_name='Изображение')
     group = models.ForeignKey(
         Group, on_delete=models.CASCADE,
-        related_name="posts", blank=True, null=True,
-        verbose_name="Группа"
+        related_name='posts', blank=True, null=True,
+        verbose_name='Группа'
     )
 
     class Meta:
-        verbose_name = "Пост"
-        verbose_name_plural = "Посты"
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
 
     def __str__(self):
-        return f"Текст поста: {self.text[:10]}..."
+        return f'Текст поста: {self.text[:10]}...'
 
 
 class Comment(models.Model):
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="comments",
-        verbose_name="Автор")
+        User, on_delete=models.CASCADE, related_name='comments',
+        verbose_name='Автор')
     post = models.ForeignKey(
-        Post, on_delete=models.CASCADE, related_name="comments",
-        verbose_name="Пост")
-    text = models.TextField(verbose_name="Текст")
+        Post, on_delete=models.CASCADE, related_name='comments',
+        verbose_name='Пост')
+    text = models.TextField(verbose_name='Текст')
     created = models.DateTimeField(
-        "Дата добавления", auto_now_add=True, db_index=True)
+        'Дата добавления', auto_now_add=True, db_index=True)
 
     class Meta:
-        verbose_name = "Комментарий"
-        verbose_name_plural = "Комментарии"
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
 
     def __str__(self):
-        return f"Текст коммента: {self.text[:10]}..."
+        return f'Текст коммента: {self.text[:10]}...'
 
 
 class Follow(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="follower",
-        verbose_name="Пользователь"
+        User, on_delete=models.CASCADE, related_name='follower',
+        verbose_name='Пользователь'
     )
     following = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="followers",
-        verbose_name="Подписчик"
+        User, on_delete=models.CASCADE, related_name='followers',
+        verbose_name='Подписчик'
     )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["following", "user"],
-                name="unique_follow"
+                fields=['following', 'user'],
+                name='unique_follow'
             ),
             models.CheckConstraint(
-                check=~models.Q(user=models.F("following")),
-                name="user_cannot_follow_himself"
+                check=~models.Q(user=models.F('following')),
+                name='user_cannot_follow_himself'
             ),
         ]
-        verbose_name = "Подписка"
-        verbose_name_plural = "Подписчики"
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписчики'
 
     def __str__(self):
-        return f"Подписчики пользователя: {self.user}"
+        return f'Подписчики пользователя: {self.user}'

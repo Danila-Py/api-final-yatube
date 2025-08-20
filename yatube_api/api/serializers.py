@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+
 from rest_framework import serializers, validators
 from rest_framework.relations import SlugRelatedField
 
@@ -36,14 +37,15 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
+    User = get_user_model()
     user = SlugRelatedField(
         slug_field='username',
-        queryset=get_user_model().objects.all(),
+        queryset=User.objects.all(),
         default=serializers.CurrentUserDefault()
     )
     following = SlugRelatedField(
         slug_field='username',
-        queryset=get_user_model().objects.all()
+        queryset=User.objects.all()
     )
 
     class Meta:
